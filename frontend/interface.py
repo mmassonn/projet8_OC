@@ -1,38 +1,49 @@
 import streamlit as st
 import requests
+import numpy as np
 from PIL import Image
-from io import BytesIO
+import base64
+import io
 
-DATA_API_URL = "https://api.huggingface.com/your-endpoint"
-PREDICTION_API_URL = "https://api.huggingface.com/your-endpoint"
+DATA_API_URL = "https://ocp7webapp-etdkd3djg4eyhwhg.canadacentral-01.azurewebsites.net/image_path"
+PREDICTION_API_URL = "https://ocp7webapp-etdkd3djg4eyhwhg.canadacentral-01.azurewebsites.net/predict_mask"
 
 def get_file_list_from_api():
     """Récupére de la liste des images disponibles depuis l'api."""
     data_api_url = DATA_API_URL
-    response = requests.get(url)
+    response = requests.post(url)
     if response.status_code == 200:
         return response.json()
     else:
         st.error("Erreur lors de la récupération de la liste des fichiers.")
         return []
 
-def send_post_request(file):
+def send_post_request(selected_file):
     """Envoie à l'api le nom de l'image sélectionnée."""
     url = PREDICTION_API_URL
-    files = {'file': file}
-    response = requests.post(url, files=files)
+    files = {'file_name': str(selected_file)}
+    response = requests.post(url, json=files)
     if response.status_code == 200:
         return response.json()
     else:
         st.error("Erreur lors de l'envoi de la requête POST.")
         return None
 
-def display_images(image_urls):
+def display_images(array_images):
     """Affiche l'image réelle, le masque segmentée réelle et celui réalisé par le modèle."""
-    st.image(image_urls[0], caption="Image réelle")
-    st.image(image_urls[1], caption="Segmentation réelle")
-    st.image(image_urls[2], caption="Segmentation réalisée par le modèle")
-
+    descriptions = {
+        'image': "Image réelle",
+        'real_mask': "Segmentation réelle",
+        'pred_mask': "Segmentation réalisée par le modèle"
+    }
+    
+    for key, base64_string in images.items():
+        img_data = base64.b64decode(base64_string)
+        img = Image.open(io.BytesIO(img_data))
+        array = np.array(img)
+        if array.dtype != np.uint8:
+            array = (array * 255).astype(np.uint8)
+        st.image(array, caption=descriptions[key])
 
 st.title("Application de Segmentation d'Image")
 
@@ -41,12 +52,9 @@ selected_file = st.selectbox("Sélectionnez un fichier", file_list)
 
 if st.button("Création de l'image segmentée"):
     if selected_file:
-        file_response = requests.get(str(selected_file))
-        if file_response.status_code == 200:
-            file = BytesIO(file_response.content)
-            image_urls = send_post_request(file)
-            if image_urls:
-                display_images(image_urls)
+        images = send_post_request(selected_file)
+        if image_urls:
+            display_images(images)
         else:
             st.error("Erreur lors de la récupération du fichier sélectionné.")
     else:
