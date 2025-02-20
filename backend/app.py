@@ -1,12 +1,10 @@
 
-import mimetypes
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from huggingface_hub import login, hf_hub_download
 from huggingface_hub import HfApi, HfFolder
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify
 from PIL import Image
-import glob, os
 import numpy as np
 from matplotlib import colors
 import base64
