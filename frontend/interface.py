@@ -47,7 +47,7 @@ def display_images(images, target_size=(300, 300)):
         if array.dtype != np.uint8:
             array = (array * 255).astype(np.uint8)
         with cols[idx]:
-            st.image(array, caption=descriptions[key], use_column_width=True)
+            st.image(array, caption=descriptions[key], use_container_width=True)
 
 st.title("Application de Segmentation d'Image")
 
