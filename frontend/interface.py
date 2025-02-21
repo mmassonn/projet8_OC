@@ -11,7 +11,7 @@ PREDICTION_API_URL = "https://ocp7webapp-etdkd3djg4eyhwhg.canadacentral-01.azure
 def get_file_list_from_api():
     """Récupére de la liste des images disponibles depuis l'api."""
     data_api_url = DATA_API_URL
-    response = requests.post(url)
+    response = requests.post(data_api_url)
     if response.status_code == 200:
         return response.json()
     else:
@@ -29,12 +29,12 @@ def send_post_request(selected_file):
         st.error("Erreur lors de l'envoi de la requête POST.")
         return None
 
-def display_images(array_images):
+def display_images(images):
     """Affiche l'image réelle, le masque segmentée réelle et celui réalisé par le modèle."""
     descriptions = {
         'image': "Image réelle",
+        'pred_mask': "Segmentation réalisée par le modèle",
         'real_mask': "Segmentation réelle",
-        'pred_mask': "Segmentation réalisée par le modèle"
     }
     
     for key, base64_string in images.items():
@@ -53,7 +53,7 @@ selected_file = st.selectbox("Sélectionnez un fichier", file_list)
 if st.button("Création de l'image segmentée"):
     if selected_file:
         images = send_post_request(selected_file)
-        if image_urls:
+        if images:
             display_images(images)
         else:
             st.error("Erreur lors de la récupération du fichier sélectionné.")
