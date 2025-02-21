@@ -10,8 +10,10 @@ import numpy as np
 from matplotlib import colors
 import base64
 import io
+import os
 
-login(token="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")
+HF_TOKEN = os.environ.get("HUGGINGFACE_TOKEN")
+login(token=HF_TOKEN)
 
 # Model
 REPO_ID = "mmassonn/CarSegmentation"
