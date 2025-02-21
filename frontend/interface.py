@@ -29,21 +29,25 @@ def send_post_request(selected_file):
         st.error("Erreur lors de l'envoi de la requête POST.")
         return None
 
-def display_images(images):
+def display_images(images, target_size=(300, 300)):
     """Affiche l'image réelle, le masque segmentée réelle et celui réalisé par le modèle."""
     descriptions = {
         'image': "Image réelle",
         'pred_mask': "Segmentation réalisée par le modèle",
         'real_mask': "Segmentation réelle",
     }
+
+    cols = st.columns(len(images))
     
-    for key, base64_string in images.items():
+    for idx, (key, base64_string) in enumerate(images.items()):
         img_data = base64.b64decode(base64_string)
         img = Image.open(io.BytesIO(img_data))
-        array = np.array(img)
+        img_resized = img.resize(target_size, Image.LANCZOS)
+        array = np.array(img_resized)
         if array.dtype != np.uint8:
             array = (array * 255).astype(np.uint8)
-        st.image(array, caption=descriptions[key])
+        with cols[idx]:
+            st.image(array, caption=descriptions[key], use_column_width=True)
 
 st.title("Application de Segmentation d'Image")
 
