@@ -5,8 +5,8 @@ from PIL import Image
 import base64
 import io
 
-DATA_API_URL = "https://ocp7webapp-etdkd3djg4eyhwhg.canadacentral-01.azurewebsites.net/image_path"
-PREDICTION_API_URL = "https://ocp7webapp-etdkd3djg4eyhwhg.canadacentral-01.azurewebsites.net/predict_mask"
+DATA_API_URL = "https://carsegmentationwebapp-bgggfnfgefdchrgp.francecentral-01.azurewebsites.net/image_path"
+PREDICTION_API_URL = "https://carsegmentationwebapp-bgggfnfgefdchrgp.francecentral-01.azurewebsites.net/predict_mask"
 
 def get_file_list_from_api():
     """Récupére de la liste des images disponibles depuis l'api."""
