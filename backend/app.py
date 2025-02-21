@@ -3,14 +3,13 @@ import cv2
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from huggingface_hub import login, hf_hub_download
-from huggingface_hub import HfApi, HfFolder
+from huggingface_hub import HfApi
 from flask import Flask, request, jsonify
 from PIL import Image
 import numpy as np
-from matplotlib import colors, pyplot as plt
+from matplotlib import colors
 import base64
 import io
-import plotly.express as px
 
 login(token="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")
 
