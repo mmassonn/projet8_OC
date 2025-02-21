@@ -1,11 +1,10 @@
-
-import cv2
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 from huggingface_hub import login, hf_hub_download
 from huggingface_hub import HfApi
 from flask import Flask, request, jsonify
 from PIL import Image
+from collections import namedtuple
 import numpy as np
 from matplotlib import colors
 import base64
@@ -65,9 +64,6 @@ def generate_img_from_mask(mask, colors_palette=['b', 'g', 'r', 'c', 'm', 'y', '
         img_seg[:, :, 2] += mask[:, :, cat] * colors.to_rgb(colors_palette[cat])[2]
 
     return img_seg
-
-from collections import namedtuple
-
 
 def get_numpy_mask_from_image(mask_img):
     mask_array   = np.zeros((mask_img.shape[0], mask_img.shape[1], 8),dtype=int) # create a mask with zeros
@@ -214,7 +210,7 @@ def segment_image() -> list:
     _ , dataset_file_paths = get_dataset_file_path()
     real_mask_file_name = dataset_file_paths[image_file_name]
     real_mask_path = hf_hub_download(repo_id=DATASET_MASK_REPO_ID, filename=real_mask_file_name, repo_type="dataset")
-    mask_array = cv2.cvtColor(cv2.imread(real_mask_path), cv2.COLOR_BGR2GRAY)
+    mask_array = np.array(Image.open(real_mask_path).convert('L'))
     real_mask_array = get_numpy_mask_from_image(mask_img = mask_array)
     real_mask_array_color = generate_img_from_mask(real_mask_array) * 255
     
